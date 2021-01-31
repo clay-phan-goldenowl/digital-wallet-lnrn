@@ -1,0 +1,67 @@
+{
+  "name": "Digital",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "init-android": "adb -d reverse tcp:8081 tcp:8081",
+    "android-dev": "ENVFile=.env.development react-native run-android --appIdSuffix dev --variant=devDebug",
+    "restart-android-dev": "yarn init-android && yarn android-dev",
+    "ios-dev": "react-native run-ios --scheme BiiB-Dev",
+    "ios-ip8": "react-native run-ios --scheme BiiB-Dev --simulator='iPhone 8'",
+    "build-android-staging": "cd android && ENVFILE=.env.development ./gradlew assembleRelease && cd ..",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint *.js **/*.js src/**/*.js",
+    "precommit": "lint-staged",
+    "postinstall": "jetifier",
+    "pod": "cd ios && pod install && cd ..",
+    "newclear": "rm -rf $TMPDIR/react-* && watchman watch-del-all && rm -rf ios/build/ModuleCache/* && rm -rf node_modules/ && yarn cache clean && yarn install",
+    "codepush:list": "echo ---- CODEPUSH_KEY_IOS: && appcenter codepush deployment list -a Neupulse-Sdn.-Bhd./BiiB -k && echo ---- CODEPUSH_KEY_ANDROID: && appcenter codepush deployment list -a Neupulse-Sdn.-Bhd./BiiB-Android -k",
+    "codepush:release": "appcenter codepush release-react -a Neupulse-Sdn.-Bhd./BiiB -d Production && appcenter codepush release-react -a Neupulse-Sdn.-Bhd./BiiB-Android -d Production --target-binary-version $(npx -c 'echo \"$npm_package_version\"')",
+    "fastlane:match": "fastlane match development -a com.biib.biib-staging,com.biib.biib-dev --readonly && fastlane match adhoc -a com.biib.biib-dev,com.biib.biib-staging,com.biib.biib --readonly && fastlane match appstore -a com.biib.biib --readonly",
+    "fastlane:match-onesignal": "fastlane match development -a com.biib.biib-dev.OneSignalNotificationServiceExtension --readonly && fastlane match adhoc -a com.biib.biib-staging.OneSignalNotificationServiceExtension --readonly && fastlane match appstore -a com.biib.biib.OneSignalNotificationServiceExtension,com.biib.biib-staging.OneSignalNotificationServiceExtension --readonly"
+  },
+  "dependencies": {
+    "react": "16.13.1",
+    "react-native": "0.63.4"
+  },
+  "devDependencies": {
+    "@babel/core": "7.12.0",
+    "@babel/runtime": "7.12.0",
+    "@react-native-community/eslint-config": "2.0.0",
+    "babel-jest": "25.5.1",
+    "babel-plugin-module-resolver": "4.0.0",
+    "babel-plugin-transform-inline-environment-variables": "0.4.3",
+    "eslint": "7.11.0",
+    "eslint-config-airbnb": "18.2.0",
+    "eslint-config-airbnb-base": "14.2.0",
+    "eslint-config-prettier": "6.15.0",
+    "eslint-import-resolver-babel-module": "5.2.0",
+    "eslint-plugin-import": "2.22.1",
+    "eslint-plugin-jsx-a11y": "6.4.1",
+    "eslint-plugin-prettier": "3.1.4",
+    "eslint-plugin-react": "7.21.5",
+    "eslint-plugin-react-hooks": "4.2.0",
+    "flow-bin": "0.137.0",
+    "husky": "4.3.0",
+    "jest": "26.6.1",
+    "jetifier": "1.6.6",
+    "lint-staged": "10.5.0",
+    "metro-react-native-babel-preset": "0.63.0",
+    "prettier": "2.1.2",
+    "react-test-renderer": "16.13.1"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx}": [
+      "eslint . --fix"
+    ]
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
+}
